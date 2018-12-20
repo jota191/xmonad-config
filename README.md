@@ -1,5 +1,5 @@
 ###### About
-Contains configuration files for my xmonad manager
+Contains files for my xmonad manager config
 
 ###### Instructions
 
