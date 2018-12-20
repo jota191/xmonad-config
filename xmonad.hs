@@ -16,7 +16,7 @@ xmonad' = do
 
  --   spawn $ "conky -c ~/.xmonad/data/conky/dzen | " ++
  --           "dzen2 -p -xs 2 -ta -r -e 'onstart=lower'"
-    xmproc <- spawnPipe "/usr/bin/xmobar /home/jpgarcia/.xmobarrc"
+    xmproc <- spawnPipe "/usr/bin/xmobar /home/jpgarcia/.xmonad/xmobarrc"
     xmonad $ defaultConfig
         { manageHook = manageDocks <+> manageHook defaultConfig
         , layoutHook = avoidStruts $ layoutHook defaultConfig
