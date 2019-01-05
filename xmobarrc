@@ -1,4 +1,4 @@
-Config { font = "xft:Noto Sans:pixelsize=8,M+ 1c:pixelsize=8"
+Config { font = "xft:Noto Sans:pixelsize=10,M+ 1c:pixelsize=8"
 --"-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*"
        , additionalFonts = []
        , borderColor = "blue"
