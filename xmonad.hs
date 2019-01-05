@@ -12,22 +12,16 @@ import XMonad.Hooks.SetWMName
 
 main = xmonad'
 xmonad' = do
-    --d <- spawnPipe "dzen2 -p -xs 1 -ta l -e 'onstart=lower'"
-
- --   spawn $ "conky -c ~/.xmonad/data/conky/dzen | " ++
- --           "dzen2 -p -xs 2 -ta -r -e 'onstart=lower'"
     xmproc <- spawnPipe "/usr/bin/xmobar /home/jpgarcia/.xmonad/xmobarrc"
     xmonad $ defaultConfig
         { manageHook = manageDocks <+> manageHook defaultConfig
         , layoutHook = avoidStruts $ layoutHook defaultConfig
-        --,  layoutHook = avoidStruts (tall ||| Mirror tall)
         , handleEventHook    = handleEventHook defaultConfig <+> docksEventHook
-      --  , logHook    = myLogHook d
         , modMask    = mod4Mask
         , keys       = myKeys
         , terminal   = "lxterminal"
         , borderWidth = 1
-        , startupHook = setWMName "LG3D"
+        , startupHook = myStartupHook
         }
 tall = Tall 1 (3/100) (1/2)
 
@@ -37,10 +31,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
     -- firefox, telegram, emacs
-    , ((modm .|. shiftMask, xK_b), spawn  "/opt/firefox/firefox")
-    , ((modm .|. shiftMask, xK_t), spawn  "/opt/Telegram/Telegram")
+    , ((modm .|. shiftMask, xK_b), spawn  "firefox")
+    , ((modm .|. shiftMask, xK_t), spawn  "telegram-desktop")
     , ((modm .|. shiftMask, xK_o), spawn  "emacs")
-
+    , ((modm .|. shiftMask, xK_m), spawn  "thunderbird")
     -- launch dmenu
     , ((modm,               xK_p     ),
        spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
@@ -166,3 +160,12 @@ myLogHook h = dynamicLogWithPP $ defaultPP
     -- output to the handle we were given as an argument
     , ppOutput          = hPutStrLn h
     }
+
+myStartupHook  = -- i do not remember why this is here
+                 setWMName "LG3D" >>
+                 -- keyboard layout
+                 spawn "setxkbmap us altgr-intl" >>
+                 -- run fehbg to put a wallpaper
+                 spawn "/home/jpgarcia/.fehbg" >>
+                 -- on shaula xmonad had the ugly X cursor, lets put a decent one
+                 spawn "xsetroot -cursor_name left_ptr"
