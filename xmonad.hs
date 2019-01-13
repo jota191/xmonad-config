@@ -20,7 +20,7 @@ xmonad' = do
         , modMask    = mod4Mask
         , keys       = myKeys
         , terminal   = "lxterminal"
-        , borderWidth = 1
+        , borderWidth = 0
         , startupHook = myStartupHook
         }
 tall = Tall 1 (3/100) (1/2)
