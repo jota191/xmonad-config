@@ -168,4 +168,6 @@ myStartupHook  = -- i do not remember why this is here
                  -- run fehbg to put a wallpaper
                  spawn "/home/jpgarcia/.fehbg" >>
                  -- on shaula xmonad had the ugly X cursor, lets put a decent one
-                 spawn "xsetroot -cursor_name left_ptr"
+                 spawn "xsetroot -cursor_name left_ptr" >>
+                 spawn "compton --backend glx --xrender-sync \
+                       \ --xrender-sync-fence -fcCz -l -17 -t -17"
