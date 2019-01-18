@@ -8,33 +8,50 @@ import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
 import System.Exit
 import XMonad.Hooks.SetWMName
-
+import XMonad.Layout.Grid
+import XMonad.Layout.Cross
+import XMonad.Layout.Tabbed
+import XMonad.Util.Themes
 
 main = xmonad'
 xmonad' = do
     xmproc <- spawnPipe "/usr/bin/xmobar /home/jpgarcia/.xmonad/xmobarrc"
-    xmonad $ defaultConfig
-        { manageHook = manageDocks <+> manageHook defaultConfig
-        , layoutHook = avoidStruts $ layoutHook defaultConfig
-        , handleEventHook    = handleEventHook defaultConfig <+> docksEventHook
+    xmonad $ def
+        { manageHook = manageDocks <+> manageHook def
+        , layoutHook = myLayout
+        , handleEventHook    = handleEventHook def <+> docksEventHook
         , modMask    = mod4Mask
         , keys       = myKeys
         , terminal   = "lxterminal"
         , borderWidth = 0
         , startupHook = myStartupHook
         }
-tall = Tall 1 (3/100) (1/2)
+
+
+-- | avoidStruts is used to keep space for xmobarr, Grid and Cross are contrib
+myLayout = avoidStruts $   myTall
+                       ||| halfTall
+                       ||| Full
+                 --    ||| simpleCross  -- contrib:XMonad.Layout.Cross
+                       ||| simpleTabbed -- contrib:XMonad.Layout.Tabbed
+                       ||| tabbed shrinkText def
+                       ||| Grid         -- contrib:XMonad.Layout.Grid
+  where myTall   = Tall 1 (2/100) (13/20) -- <- last one is size of master pane
+        halfTall = Tall 1 (2/100) (1/2)
+-- alltabbed = let l = length listOfThemes
+--             in foldr (|||) Full $ [tabbed shrinkText (theme tm) | tm <- listOfThemes]
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
  
     -- launch a terminal
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
-    -- firefox, telegram, emacs
+    -- firefox, telegram, emacs, etc
     , ((modm .|. shiftMask, xK_b), spawn  "firefox")
     , ((modm .|. shiftMask, xK_t), spawn  "telegram-desktop")
     , ((modm .|. shiftMask, xK_o), spawn  "emacs")
     , ((modm .|. shiftMask, xK_m), spawn  "thunderbird")
+    , ((modm .|. shiftMask, xK_x), spawn  "xchat")
     -- launch dmenu
     , ((modm,               xK_p     ),
        spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
@@ -44,11 +61,16 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     --take a screenshot of entire display
     , ((modm ,              xK_Print ),
-        spawn "scrot screen_%Y-%m-%d-%H-%M-%S.png -d 1")
+        spawn "scrot screen_%Y-%m-%d-%H-%M-%S.png -d 1" >>
+        spawn "paplay /usr/share/sounds/freedesktop/stereo/screen-capture.oga" >>
+        spawn "echo $(pwd) >> /home/jpgarcia/ke"
+      )
 
     --take a screenshot of focused window
     , ((modm .|. controlMask, xK_Print ),
-       spawn "scrot window_%Y-%m-%d-%H-%M-%S.png -d 1 -u")
+       spawn "scrot window_%Y-%m-%d-%H-%M-%S.png" >>
+       spawn "paplay /usr/share/sounds/freedesktop/stereo/screen-capture.oga"
+      )
 
     -- close focused window
     , ((modm .|. shiftMask, xK_c     ), kill)
@@ -131,7 +153,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
-myLogHook h = dynamicLogWithPP $ defaultPP
+myLogHook h = dynamicLogWithPP $ def
     -- display current workspace as darkgrey on light grey (opposite of 
     -- default colors)
     { ppCurrent         = dzenColor "#303030" "#909090" . pad 
@@ -171,3 +193,5 @@ myStartupHook  = -- i do not remember why this is here
                  spawn "xsetroot -cursor_name left_ptr" >>
                  spawn "compton --backend glx --xrender-sync \
                        \ --xrender-sync-fence -fcCz -l -17 -t -17"
+
+
