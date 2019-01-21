@@ -12,32 +12,63 @@ import XMonad.Layout.Grid
 import XMonad.Layout.Cross
 import XMonad.Layout.Tabbed
 import XMonad.Util.Themes
+import XMonad.Layout.Spacing
 
 main = xmonad'
 xmonad' = do
-    xmproc <- spawnPipe "/usr/bin/xmobar /home/jpgarcia/.xmonad/xmobarrc"
+    --xmproc <- spawnPipe "/usr/bin/xmobar /home/jpgarcia/.xmonad/xmobarrc -d "
+    xmproc <- spawnPipe "/home/jpgarcia/.cabal/bin/xmobar \
+                      \ /home/jpgarcia/.xmonad/xmobarrc -d "
     xmonad $ def
-        { manageHook = manageDocks <+> manageHook def
-        , layoutHook = myLayout
-        , handleEventHook    = handleEventHook def <+> docksEventHook
-        , modMask    = mod4Mask
-        , keys       = myKeys
-        , terminal   = "lxterminal"
-        , borderWidth = 0
-        , startupHook = myStartupHook
+        { logHook         = myLogHook xmproc
+        , manageHook      = manageDocks <+> manageHook def
+        , layoutHook      = myLayout
+        , handleEventHook = handleEventHook def <+> docksEventHook
+        , modMask         = mod4Mask
+        , keys            = myKeys
+        , terminal        = "lxterminal"
+        , borderWidth     = 0
+        , startupHook     = myStartupHook
+        , mouseBindings   = myMouseBindings
         }
 
 
 -- | avoidStruts is used to keep space for xmobarr, Grid and Cross are contrib
-myLayout = avoidStruts $   myTall
+myLayout = spacingRaw True (Border 0   bdz bdz bdz)
+                      True (Border bdz bdz bdz bdz) True
+           $ avoidStruts $   tabbedBottom shrinkText myTheme
+                       ||| myTall
                        ||| halfTall
                        ||| Full
                  --    ||| simpleCross  -- contrib:XMonad.Layout.Cross
-                       ||| simpleTabbed -- contrib:XMonad.Layout.Tabbed
-                       ||| tabbed shrinkText def
+                 --    ||| simpleTabbed -- contrib:XMonad.Layout.Tabbed
                        ||| Grid         -- contrib:XMonad.Layout.Grid
   where myTall   = Tall 1 (2/100) (13/20) -- <- last one is size of master pane
         halfTall = Tall 1 (2/100) (1/2)
+        themes   = [(theme tm) | tm <- listOfThemes]
+        bdz      = 5
+
+myTheme = Theme {activeColor = "#2b4f98",
+                 inactiveColor = "#cccccc",
+                 urgentColor = "#FFFF00",
+                 activeBorderColor = "#2b4f98",
+                 inactiveBorderColor = "#cccccc",
+                 urgentBorderColor = "##00FF00",
+                 activeTextColor = "white",
+                 inactiveTextColor = "black",
+                 urgentTextColor = "#FF0000",
+                 fontName = "xft:Noto Sans:pixelsize=10,M+ 1c:pixelsize=10",
+                 decoWidth = 200,
+                 decoHeight = 16,
+                 windowTitleAddons = [],
+                 windowTitleIcons = []}
+
+myMouseBindings conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
+    [-- Move focus to the previous window
+      ((noModMask, 8 :: Button), \_ -> (windows W.focusUp)  )
+    -- Move focus to the master window
+    , ((noModMask, 9 :: Button), \_ -> (windows W.focusDown))]
+  
 -- alltabbed = let l = length listOfThemes
 --             in foldr (|||) Full $ [tabbed shrinkText (theme tm) | tm <- listOfThemes]
 
@@ -68,7 +99,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     --take a screenshot of focused window
     , ((modm .|. controlMask, xK_Print ),
-       spawn "scrot window_%Y-%m-%d-%H-%M-%S.png" >>
+       spawn "scrot window_%Y-%m-%d-%H-%M-%S.png -u" >>
        spawn "paplay /usr/share/sounds/freedesktop/stereo/screen-capture.oga"
       )
 
@@ -92,7 +123,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
  
     -- Move focus to the previous window
     , ((modm,               xK_k     ), windows W.focusUp  )
- 
+
+    , ((modm .|. shiftMask, xK_Tab   ), windows W.focusUp  )
     -- Move focus to the master window
     , ((modm,               xK_m     ), windows W.focusMaster  )
  
@@ -124,8 +156,10 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     -- Use this binding with avoidStruts from Hooks.ManageDocks.
     -- See also the statusBar function from Hooks.DynamicLog.
     --
-    -- , ((modm              , xK_b     ), sendMessage ToggleStruts)
- 
+    , ((modm              , xK_f     ), sendMessage ToggleStruts)
+
+     
+    
     -- Quit xmonad
     , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
  
@@ -153,34 +187,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
-myLogHook h = dynamicLogWithPP $ def
+myLogHook h = dynamicLogWithPP $ xmobarPP
     -- display current workspace as darkgrey on light grey (opposite of 
     -- default colors)
-    { ppCurrent         = dzenColor "#303030" "#909090" . pad 
-
-    -- display other workspaces which contain windows as a brighter grey
-    , ppHidden          = dzenColor "#909090" "" . pad 
-
-    -- display other workspaces with no windows as a normal grey
-    , ppHiddenNoWindows = dzenColor "#606060" "" . pad 
-
-    -- display the current layout as a brighter grey
-    , ppLayout          = dzenColor "#909090" "" . pad 
-
-    -- if a window on a hidden workspace needs my attention, color it so
-    , ppUrgent          = dzenColor "#ff0000" "" . pad . dzenStrip
-
-    -- shorten if it goes over 100 characters
-    , ppTitle           = shorten 100
-
-    -- no separator between workspaces
-    , ppWsSep           = ""
-
-    -- put a few spaces between each object
-    , ppSep             = "  "
-
+    { 
     -- output to the handle we were given as an argument
-    , ppOutput          = hPutStrLn h
+      ppOutput          = hPutStrLn h
     }
 
 myStartupHook  = -- i do not remember why this is here
@@ -192,6 +204,7 @@ myStartupHook  = -- i do not remember why this is here
                  -- on shaula xmonad had the ugly X cursor, lets put a decent one
                  spawn "xsetroot -cursor_name left_ptr" >>
                  spawn "compton --backend glx --xrender-sync \
-                       \ --xrender-sync-fence -fcCz -l -17 -t -17"
+                       \ --xrender-sync-fence -fcCz -l -17 -t -17 \
+                       \ --config /home/jpgarcia/.xmonad/compton.conf"
 
 
