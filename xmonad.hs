@@ -13,6 +13,7 @@ import XMonad.Layout.Cross
 import XMonad.Layout.Tabbed
 import XMonad.Util.Themes
 import XMonad.Layout.Spacing
+import Kb4000
 
 main = xmonad'
 xmonad' = do
@@ -20,8 +21,8 @@ xmonad' = do
     xmproc <- spawnPipe "/home/jpgarcia/.cabal/bin/xmobar \
                       \ /home/jpgarcia/.xmonad/xmobarrc -d "
     xmonad $ def
-        { logHook         = myLogHook xmproc
-        , manageHook      = manageDocks <+> manageHook def
+        { -- logHook         = myLogHook xmproc
+    {-,-} manageHook      = manageDocks <+> manageHook def
         , layoutHook      = myLayout
         , handleEventHook = handleEventHook def <+> docksEventHook
         , modMask         = mod4Mask
@@ -30,8 +31,10 @@ xmonad' = do
         , borderWidth     = 0
         , startupHook     = myStartupHook
         , mouseBindings   = myMouseBindings
+        , workspaces      = myWorkspaces
         }
 
+myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 
 -- | avoidStruts is used to keep space for xmobarr, Grid and Cross are contrib
 myLayout = spacingRaw True (Border 0   bdz bdz bdz)
@@ -64,13 +67,24 @@ myTheme = Theme {activeColor = "#2b4f98",
                  windowTitleIcons = []}
 
 myMouseBindings conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
-    [-- Move focus to the previous window
-      ((noModMask, 8 :: Button), \_ -> (windows W.focusUp)  )
+    [
+    -- mod-button1, Set the window to floating mode and move by dragging
+      ((modm, button1), (\w -> focus w >> mouseMoveWindow w
+                                       >> windows W.shiftMaster))
+ 
+    -- mod-button2, Raise the window to the top of the stack
+    , ((modm, button2), (\w -> focus w >> windows W.shiftMaster))
+ 
+    -- mod-button3, Set the window to floating mode and resize by dragging
+    , ((modm, button3), (\w -> focus w >> mouseResizeWindow w
+                                       >> windows W.shiftMaster))
+
+    -- Move focus to the previous window
+    , ((noModMask, 8 :: Button), \_ -> (windows W.focusUp)  )
     -- Move focus to the master window
     , ((noModMask, 9 :: Button), \_ -> (windows W.focusDown))]
-  
--- alltabbed = let l = length listOfThemes
---             in foldr (|||) Full $ [tabbed shrinkText (theme tm) | tm <- listOfThemes]
+
+
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
  
@@ -83,6 +97,16 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_o), spawn  "emacs")
     , ((modm .|. shiftMask, xK_m), spawn  "thunderbird")
     , ((modm .|. shiftMask, xK_x), spawn  "xchat")
+    , ((modm .|. shiftMask, xK_v), spawn  "evince")
+
+    -- Kb 40k bindings
+    , ((noModMask, xK_Mail),    spawn  "thunderbird")
+    , ((noModMask, xK_WebHome), spawn  "firefox")
+    , ((noModMask, xK_Fav5), spawn  "/home/jpgarcia/.screenlayout/AOC-eDP.sh")
+    , ((noModMask, xK_VolUp),   spawn  "amixer -D pulse sset Master 5%+")
+    , ((noModMask, xK_VolDown), spawn  "amixer -D pulse sset Master 5%-")
+    , ((noModMask, xK_VolMute), spawn  "amixer set Master toggle")
+  
     -- launch dmenu
     , ((modm,               xK_p     ),
        spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
@@ -93,8 +117,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     --take a screenshot of entire display
     , ((modm ,              xK_Print ),
         spawn "scrot screen_%Y-%m-%d-%H-%M-%S.png -d 1" >>
-        spawn "paplay /usr/share/sounds/freedesktop/stereo/screen-capture.oga" >>
-        spawn "echo $(pwd) >> /home/jpgarcia/ke"
+        spawn "paplay /usr/share/sounds/freedesktop/stereo/screen-capture.oga"
       )
 
     --take a screenshot of focused window
@@ -187,13 +210,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
-myLogHook h = dynamicLogWithPP $ xmobarPP
-    -- display current workspace as darkgrey on light grey (opposite of 
-    -- default colors)
-    { 
-    -- output to the handle we were given as an argument
-      ppOutput          = hPutStrLn h
-    }
+-- myLogHook h = dynamicLogWithPP $ xmobarPP
+--     -- display current workspace as darkgrey on light grey (opposite of 
+--     -- default colors)
+--     { 
+--     -- output to the handle we were given as an argument
+--       ppOutput          = hPutStrLn h
+--     }
 
 myStartupHook  = -- i do not remember why this is here
                  setWMName "LG3D" >>
@@ -206,5 +229,5 @@ myStartupHook  = -- i do not remember why this is here
                  spawn "compton --backend glx --xrender-sync \
                        \ --xrender-sync-fence -fcCz -l -17 -t -17 \
                        \ --config /home/jpgarcia/.xmonad/compton.conf"
-
+                 
 
