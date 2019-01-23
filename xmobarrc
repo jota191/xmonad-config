@@ -16,8 +16,7 @@ Config { font = "xft:Noto Sans:pixelsize=10,M+ 1c:pixelsize=8"
        , iconRoot = "."
        , allDesktops = True
        , overrideRedirect = False
-       , commands = [ Run Weather "SUMU" ["-t","<tempC>C","-L","18","-H","25","--normal","green","--high","red","--low","lightblue"] 36000
-                    , Run Battery [ "--template" , "Batt: <acstatus>"
+       , commands = [ Run Battery [ "--template" , "Batt: <acstatus>"
                                  , "--Low"      , "20"        -- units: %
                                  , "--High"     , "80"        -- units: %
                                  , "--low"      , "darkred"
@@ -41,7 +40,7 @@ Config { font = "xft:Noto Sans:pixelsize=10,M+ 1c:pixelsize=8"
                     ]
        , sepChar = "%"
        , alignSep = "}{"
-       , template = "%cpu% | %memory% | %SUMU% }\
+       , template = "%cpu% | %memory% }\
                     \ %uname% { <fc=#ee9a00>%date%</fc>| %battery%"
        }
 
