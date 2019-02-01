@@ -100,13 +100,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_v), spawn  "evince")
 
     -- Kb 40k bindings
-    , ((noModMask, xK_Mail),    spawn  "thunderbird")
-    , ((noModMask, xK_WebHome), spawn  "firefox")
+    , ((noModMask, xK_Mail),       spawn  "thunderbird")
+    , ((noModMask, xK_WebHome),    spawn  "firefox")
     , ((noModMask, xK_Fav5), spawn  "/home/jpgarcia/.screenlayout/AOC-eDP.sh")
-    , ((noModMask, xK_VolUp),   spawn  "amixer -D pulse sset Master 5%+")
-    , ((noModMask, xK_VolDown), spawn  "amixer -D pulse sset Master 5%-")
-    , ((noModMask, xK_VolMute), spawn  "amixer set Master toggle")
-  
+    , ((noModMask, xK_VolUp),      spawn  "amixer -D pulse sset Master 5%+")
+    , ((noModMask, xK_VolDown),    spawn  "amixer -D pulse sset Master 5%-")
+    , ((noModMask, xK_VolMute),    spawn  "amixer set Master toggle")
+    , ((noModMask, xK_Calculator), spawn  "lxterminal --command=ghci")
     -- launch dmenu
     , ((modm,               xK_p     ),
        spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
@@ -226,7 +226,7 @@ myStartupHook  = -- i do not remember why this is here
                  spawn "/home/jpgarcia/.fehbg" >>
                  -- on shaula xmonad had the ugly X cursor, lets put a decent one
                  spawn "xsetroot -cursor_name left_ptr" >>
-                 spawn "compton --backend glx --xrender-sync \
+                 spawn "compton -CGb --backend glx --xrender-sync \
                        \ --xrender-sync-fence -fcCz -l -17 -t -17 \
                        \ --config /home/jpgarcia/.xmonad/compton.conf"
                  
