@@ -92,7 +92,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
     -- firefox, telegram, emacs, etc
-    , ((modm .|. shiftMask, xK_b), spawn  "firefox")
+    , ((modm .|. shiftMask, xK_b), spawn  "icecat")
     , ((modm .|. shiftMask, xK_t), spawn  "telegram-desktop")
     , ((modm .|. shiftMask, xK_o), spawn  "emacs")
     , ((modm .|. shiftMask, xK_m), spawn  "thunderbird")
