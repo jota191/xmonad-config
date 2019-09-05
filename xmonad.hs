@@ -18,7 +18,7 @@ import Kb4000
 main = xmonad'
 xmonad' = do
     --xmproc <- spawnPipe "/usr/bin/xmobar /home/jpgarcia/.xmonad/xmobarrc -d "
-    xmproc <- spawnPipe "/home/jpgarcia/.cabal/bin/xmobar \
+    xmproc <- spawnPipe "/usr/bin/xmobar \
                       \ /home/jpgarcia/.xmonad/xmobarrc -d "
     xmonad $ def
         { -- logHook         = myLogHook xmproc
@@ -93,11 +93,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- firefox, telegram, emacs, etc
     , ((modm .|. shiftMask, xK_b), spawn  "icecat")
-    , ((modm .|. shiftMask, xK_t), spawn  "telegram-desktop")
+    , ((modm .|. shiftMask, xK_t), spawn  "/opt/Telegram/Telegram")
     , ((modm .|. shiftMask, xK_o), spawn  "emacs")
     , ((modm .|. shiftMask, xK_m), spawn  "thunderbird")
     , ((modm .|. shiftMask, xK_x), spawn  "xchat")
     , ((modm .|. shiftMask, xK_v), spawn  "evince")
+    , ((modm .|. shiftMask, xK_f), spawn  "pcmanfm")
+    , ((modm .|. shiftMask, xK_i), spawn  "wicd-gtk")
 
     -- Kb 40k bindings
     , ((noModMask, xK_Mail),       spawn  "thunderbird")
@@ -108,11 +110,11 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((noModMask, xK_VolMute),    spawn  "amixer set Master toggle")
     , ((noModMask, xK_Calculator), spawn  "lxterminal --command=ghci")
     -- launch dmenu
-    , ((modm,               xK_p     ),
+    , ((modm.|. shiftMask, xK_p),
        spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
  
     -- launch gmrun
-    , ((modm .|. shiftMask, xK_p     ), spawn "gmrun")
+    , ((modm, xK_p), spawn "gmrun")
 
     --take a screenshot of entire display
     , ((modm ,              xK_Print ),
@@ -187,7 +189,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
  
     -- Restart xmonad
-    , ((modm              , xK_q     ), spawn "xmonad --recompile; xmonad --restart")
+    , ((modm              , xK_q     ), spawn "xmonad --restart")
     ]
     ++
  
