@@ -1,10 +1,10 @@
 Config { font = "xft:Noto Sans:pixelsize=14,M+ 1c:pixelsize=12"
 --"-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*"
        , additionalFonts = []
-       , borderColor = "blue"
+       -- , borderColor = "black"
        , border = NoBorder
        , bgColor = "black"
-       , fgColor = "grey"
+       , fgColor = "lightblue"
        , alpha = 180
        , position = Top
        , textOffset = -1
