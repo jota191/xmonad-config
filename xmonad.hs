@@ -92,8 +92,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
     -- firefox, telegram, emacs, etc
-    , ((modm .|. shiftMask, xK_b), spawn  "icecat")
-    , ((modm .|. shiftMask, xK_t), spawn  "/opt/Telegram/Telegram")
+    , ((modm .|. shiftMask, xK_b), spawn  "/opt/icecat/icecat")
+    , ((modm .|. shiftMask, xK_t), spawn  "telegram-desktop")
     , ((modm .|. shiftMask, xK_o), spawn  "emacs")
     , ((modm .|. shiftMask, xK_m), spawn  "thunderbird")
     , ((modm .|. shiftMask, xK_x), spawn  "xchat")
@@ -231,5 +231,7 @@ myStartupHook  = -- i do not remember why this is here
                  spawn "compton -CGb --backend glx --xrender-sync \
                        \ --xrender-sync-fence -fcCz -l -17 -t -17 \
                        \ --config /home/jpgarcia/.xmonad/compton.conf"
+                 >>
+                 spawn "/home/jpgarcia/.screenlayout/aocedp.sh"
                  
 
