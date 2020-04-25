@@ -49,7 +49,7 @@ myLayout = spacingRaw True (Border 0   bdz bdz bdz)
   where myTall   = Tall 1 (2/100) (13/20) -- <- last one is size of master pane
         halfTall = Tall 1 (2/100) (1/2)
         themes   = [(theme tm) | tm <- listOfThemes]
-        bdz      = 5
+        bdz      = 0
 
 myTheme = Theme {activeColor = "#2b4f98",
                  inactiveColor = "#cccccc",
@@ -93,13 +93,14 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- firefox, telegram, emacs, etc
     , ((modm .|. shiftMask, xK_b), spawn  "/opt/icecat/icecat")
-    , ((modm .|. shiftMask, xK_t), spawn  "telegram-desktop")
+    , ((modm .|. shiftMask, xK_t), spawn  "/opt/bin/Telegram")
     , ((modm .|. shiftMask, xK_o), spawn  "emacs")
     , ((modm .|. shiftMask, xK_m), spawn  "thunderbird")
     , ((modm .|. shiftMask, xK_x), spawn  "xchat")
     , ((modm .|. shiftMask, xK_v), spawn  "evince")
     , ((modm .|. shiftMask, xK_f), spawn  "pcmanfm")
     , ((modm .|. shiftMask, xK_i), spawn  "wicd-gtk")
+    , ((modm .|. controlMask , xK_Return), spawn  "/opt/bin/cool-retro-term")
 
     -- Kb 40k bindings
     , ((noModMask, xK_Mail),       spawn  "thunderbird")
@@ -118,13 +119,13 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     --take a screenshot of entire display
     , ((modm ,              xK_Print ),
-        spawn "scrot screen_%Y-%m-%d-%H-%M-%S.png -d 1" >>
+        spawn "scrot ./Pictures/Screenshots/screen_%Y-%m-%d-%H-%M-%S.png -d 1" >>
         spawn "paplay /usr/share/sounds/freedesktop/stereo/screen-capture.oga"
       )
 
     --take a screenshot of focused window
     , ((modm .|. controlMask, xK_Print ),
-       spawn "scrot window_%Y-%m-%d-%H-%M-%S.png -u" >>
+       spawn "scrot ./Pictures/Screenshots/window_%Y-%m-%d-%H-%M-%S.png -u" >>
        spawn "paplay /usr/share/sounds/freedesktop/stereo/screen-capture.oga"
       )
 
@@ -183,8 +184,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     --
     , ((modm              , xK_f     ), sendMessage ToggleStruts)
 
-     
-    
+
+
     -- Quit xmonad
     , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
  
@@ -192,7 +193,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((modm              , xK_q     ), spawn "xmonad --restart")
     ]
     ++
- 
+
     --
     -- mod-[1..9], Switch to workspace N
     --
@@ -203,7 +204,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         | (i, k) <- zip (XMonad.workspaces conf) [xK_1 .. xK_9]
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
     ++
- 
+
     --
     -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
     -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
@@ -212,16 +213,9 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
--- myLogHook h = dynamicLogWithPP $ xmobarPP
---     -- display current workspace as darkgrey on light grey (opposite of 
---     -- default colors)
---     { 
---     -- output to the handle we were given as an argument
---       ppOutput          = hPutStrLn h
---     }
 
 myStartupHook  = -- i do not remember why this is here
-                 setWMName "LG3D" >>
+                 -- setWMName "LG3D" >>
                  -- keyboard layout
                  spawn "setxkbmap us altgr-intl" >>
                  -- run fehbg to put a wallpaper
