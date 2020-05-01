@@ -14,15 +14,14 @@ import XMonad.Layout.Tabbed
 import XMonad.Util.Themes
 import XMonad.Layout.Spacing
 import Kb4000
+import Data.List(isSuffixOf)
 
 main = xmonad'
 xmonad' = do
-    --xmproc <- spawnPipe "/usr/bin/xmobar /home/jpgarcia/.xmonad/xmobarrc -d "
     xmproc <- spawnPipe "/usr/bin/xmobar \
                       \ /home/jpgarcia/.xmonad/xmobarrc -d "
     xmonad $ def
-        { -- logHook         = myLogHook xmproc
-    {-,-} manageHook      = manageDocks <+> manageHook def
+        { manageHook      = myManageHook
         , layoutHook      = myLayout
         , handleEventHook = handleEventHook def <+> docksEventHook
         , modMask         = mod4Mask
@@ -33,6 +32,14 @@ xmonad' = do
         , mouseBindings   = myMouseBindings
         , workspaces      = myWorkspaces
         }
+
+myManageHook = composeAll
+    [  className =? "Gimp"  --> doFloat
+    , className =? "Gimp" <&&> fmap ("tool" `isSuffixOf`) role --> doFloat
+    ]
+    <+> manageDocks
+    <+> manageHook def
+  where role = stringProperty "WM_WINDOW_ROLE"
 
 myWorkspaces    = ["1","2","3","4","5","6","7","8","9"]
 
@@ -87,7 +94,6 @@ myMouseBindings conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
 
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
- 
     -- launch a terminal
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
@@ -184,8 +190,6 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     --
     , ((modm              , xK_f     ), sendMessage ToggleStruts)
 
-
-
     -- Quit xmonad
     , ((modm .|. shiftMask, xK_q     ), io (exitWith ExitSuccess))
  
@@ -214,8 +218,8 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
 
 
-myStartupHook  = -- i do not remember why this is here
-                 -- setWMName "LG3D" >>
+myStartupHook  = -- I do not remember why this is here
+                 setWMName "LG3D" >>
                  -- keyboard layout
                  spawn "setxkbmap us altgr-intl" >>
                  -- run fehbg to put a wallpaper
@@ -227,5 +231,3 @@ myStartupHook  = -- i do not remember why this is here
                        \ --config /home/jpgarcia/.xmonad/compton.conf"
                  >>
                  spawn "/home/jpgarcia/.screenlayout/aocedp.sh"
-                 
-
