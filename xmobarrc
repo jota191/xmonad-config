@@ -1,7 +1,6 @@
 Config { font = "xft:Noto Sans:pixelsize=14,M+ 1c:pixelsize=12"
 --"-misc-fixed-*-*-*-*-10-*-*-*-*-*-*-*"
        , additionalFonts = []
-       -- , borderColor = "black"
        , border = NoBorder
        , bgColor = "black"
        , fgColor = "lightblue"
@@ -17,32 +16,45 @@ Config { font = "xft:Noto Sans:pixelsize=14,M+ 1c:pixelsize=12"
        , allDesktops = True
        , overrideRedirect = False
        , commands = [ Run Battery [ "--template" , "Batt: <acstatus>"
-                                 , "--Low"      , "20"        -- units: %
-                                 , "--High"     , "80"        -- units: %
-                                 , "--low"      , "darkred"
-                                 , "--normal"   , "darkorange"
-                                 , "--high"     , "darkgreen"
-                                 
-                                 , "--" -- battery specific options
-                                   -- discharging status
-                                 , "-o"	, "<left>% (<timeleft>)"
-                                          -- AC "on" status
-                                 , "-O"	, "<fc=#dAA520>Charging</fc>"
-                                          -- charged status
-                                 , "-i"	, "<fc=#006000>Charged</fc>"
-                                 ] 50
+                                  , "--Low"      , "20"        -- units: %
+                                  , "--High"     , "80"        -- units: %
+                                  , "--low"      , "red"
+                                  , "--normal"   , "darkorange"
+                                  , "--high"     , "darkgreen"
+                                  
+                                  , "--" -- battery specific options
+                                    -- discharging status
+                                  , "-o"	, "<left>% (<timeleft>)"
+                                                  -- AC "on" status
+                                  , "-O"	, "<fc=#dAA520>Charging</fc>"
+                                                  -- charged status
+                                  , "-i"	, "<fc=#006000>Charged</fc>"
+                                  ] 50
+                    , Run Weather "SUAA" ["-t","M: <tempC>C",
+                                          "-L","18","-H","25","--normal",
+                                          "green","--high","red","--low",
+                                          "lightblue"] 36000
+                    , Run Weather "SUMU" ["-t","C: <tempC>C (<skyCondition>)",
+                                          "-L","18","-H","25","--normal",
+                                          "green","--high","red","--low",
+                                          "lightblue"] 36000
                     , Run Cpu ["-L","3","-H","50",
                                "--normal","green","--high","red"] 10
                     , Run Memory ["-t","Mem: <usedratio>%"] 10
                     , Run Swap [] 10
                     , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
                     , Run Com "uname" ["-onrv"] "" 0
+                    , Run Network "enp1s0f1" ["-L","0","-H","32",
+                                              "--normal","green",
+                                              "--high","red"] 10
+                    , Run Network "wlp2s0" ["-L","0","-H","32",
+                                            "--normal","green",
+                                            "--high","red"] 10
                     ]
-       , sepChar = "%"
+       , sepChar  = "%"
        , alignSep = "}{"
-       , template = "%cpu% | %memory% }\
-                    \ %uname% { <fc=#ee9a00>%date%</fc>| %battery%"
+       , template = "║ %cpu% ┆ %memory% ╳ %swap% ┆\
+                    \ wired: %enp1s0f1% ╳ w'less:  %wlp2s0% ║}\
+                    \ ☆ %uname% ☭ { \
+                    \ ║ <fc=#ee9a00>%date%</fc> ║ %SUMU% ╳ %SUAA% ║  %battery% ║"
        }
-
-
-

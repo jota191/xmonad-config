@@ -16,8 +16,7 @@ import XMonad.Layout.Spacing
 import Kb4000
 import Data.List(isSuffixOf)
 
-main = xmonad'
-xmonad' = do
+main = do
     xmproc <- spawnPipe "/usr/bin/xmobar \
                       \ /home/jpgarcia/.xmonad/xmobarrc -d "
     xmonad $ def
