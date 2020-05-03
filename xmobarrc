@@ -23,7 +23,7 @@ Config { font = "xft:Noto Sans:pixelsize=14,M+ 1c:pixelsize=12"
                                   , "--high"     , "darkgreen"
                                   
                                   , "--" -- battery specific options
-                                    -- discharging status
+                                     -- discharging status
                                   , "-o"	, "<left>% (<timeleft>)"
                                                   -- AC "on" status
                                   , "-O"	, "<fc=#dAA520>Charging</fc>"

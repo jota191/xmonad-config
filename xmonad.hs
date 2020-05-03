@@ -1,8 +1,8 @@
 import XMonad
 import XMonad.Hooks.DynamicLog
 import XMonad.Hooks.ManageDocks
-import XMonad.Util.Run(spawnPipe)
-import XMonad.Util.EZConfig(additionalKeys)
+import XMonad.Util.Run          (spawnPipe)
+import XMonad.Util.EZConfig     (additionalKeys)
 import System.IO
 import qualified XMonad.StackSet as W
 import qualified Data.Map        as M
@@ -14,7 +14,7 @@ import XMonad.Layout.Tabbed
 import XMonad.Util.Themes
 import XMonad.Layout.Spacing
 import Kb4000
-import Data.List(isSuffixOf)
+import Data.List                (isSuffixOf)
 
 main = do
     xmproc <- spawnPipe "/usr/bin/xmobar \
@@ -76,23 +76,21 @@ myMouseBindings conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     [
     -- mod-button1, Set the window to floating mode and move by dragging
       ((modm, button1), (\w -> focus w >> mouseMoveWindow w
-                                       >> windows W.shiftMaster))
- 
+                                       >> windows W.shiftMaster)) 
     -- mod-button2, Raise the window to the top of the stack
     , ((modm, button2), (\w -> focus w >> windows W.shiftMaster))
- 
+
     -- mod-button3, Set the window to floating mode and resize by dragging
     , ((modm, button3), (\w -> focus w >> mouseResizeWindow w
                                        >> windows W.shiftMaster))
-
     -- Move focus to the previous window
     , ((noModMask, 8 :: Button), \_ -> (windows W.focusUp)  )
+
     -- Move focus to the master window
     , ((noModMask, 9 :: Button), \_ -> (windows W.focusDown))]
 
-
-
 myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
+
     -- launch a terminal
     [ ((modm .|. shiftMask, xK_Return), spawn $ XMonad.terminal conf)
 
@@ -197,7 +195,6 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     ]
     ++
 
-    --
     -- mod-[1..9], Switch to workspace N
     --
     -- mod-[1..9], Switch to workspace N
@@ -208,14 +205,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
         , (f, m) <- [(W.greedyView, 0), (W.shift, shiftMask)]]
     ++
 
-    --
     -- mod-{w,e,r}, Switch to physical/Xinerama screens 1, 2, or 3
     -- mod-shift-{w,e,r}, Move client to screen 1, 2, or 3
     --
     [((m .|. modm, key), screenWorkspace sc >>= flip whenJust (windows . f))
         | (key, sc) <- zip [xK_w, xK_e, xK_r] [0..]
         , (f, m) <- [(W.view, 0), (W.shift, shiftMask)]]
-
 
 myStartupHook  = -- I do not remember why this is here
                  setWMName "LG3D" >>
