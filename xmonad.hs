@@ -113,6 +113,12 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
     , ((noModMask, xK_VolDown),    spawn  "amixer -D pulse sset Master 5%-")
     , ((noModMask, xK_VolMute),    spawn  "amixer set Master toggle")
     , ((noModMask, xK_Calculator), spawn  "lxterminal --command=ghci")
+
+    -- volume control
+    , ((modm .|. shiftMask, xK_equal),     spawn  "amixer -D pulse sset Master 5%+")
+    , ((modm .|. shiftMask, xK_minus),    spawn  "amixer -D pulse sset Master 5%-")
+    
+    
     -- launch dmenu
     , ((modm.|. shiftMask, xK_p),
        spawn "exe=`dmenu_path | dmenu` && eval \"exec $exe\"")
@@ -220,8 +226,7 @@ myStartupHook  = -- I do not remember why this is here
                  spawn "/home/jpgarcia/.fehbg" >>
                  -- on shaula xmonad had the ugly X cursor, lets put a decent one
                  spawn "xsetroot -cursor_name left_ptr" >>
-                 spawn "compton -CGb --backend glx --xrender-sync \
-                       \ --xrender-sync-fence -fcCz -l -17 -t -17 \
-                       \ --config /home/jpgarcia/.xmonad/compton.conf"
-                 >>
+                 -- spawn "compton -CGb --backend glx --xrender-sync \
+                 --       \ --xrender-sync-fence -fcCz -l -17 -t -17 \
+                 --       \ --config /home/jpgarcia/.xmonad/compton.conf">>
                  spawn "/home/jpgarcia/.screenlayout/aocedp.sh"
