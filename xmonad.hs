@@ -18,7 +18,11 @@ import Data.List                (isSuffixOf)
 
 main = do
     xmproc <- spawnPipe "/usr/bin/xmobar \
-                      \ /home/jpgarcia/.xmonad/xmobarrc -d "
+                     \ /home/jpgarcia/.xmonad/xmobarrc -d "
+    -- xmproc <- spawnPipe (
+    --   "/home/jpgarcia/.cabal/packages/hackage.haskell.org/xmob" ++
+    --   "ar/0.33/xmobar-0.33/dist/dist-sandbox-fc83eb03/build/xmobar/xmobar" ++
+    --   " /home/jpgarcia/.xmonad/xmobarrc -d")
     xmonad $ def
         { manageHook      = myManageHook
         , layoutHook      = myLayout
@@ -96,7 +100,7 @@ myKeys conf@(XConfig {XMonad.modMask = modm}) = M.fromList $
 
     -- firefox, telegram, emacs, etc
     , ((modm .|. shiftMask, xK_b), spawn  "/opt/icecat/icecat")
-    , ((modm .|. shiftMask, xK_t), spawn  "/opt/bin/Telegram")
+    , ((modm .|. shiftMask, xK_t), spawn  "/usr/bin/telegram-desktop")
     , ((modm .|. shiftMask, xK_o), spawn  "emacs")
     , ((modm .|. shiftMask, xK_m), spawn  "thunderbird")
     , ((modm .|. shiftMask, xK_x), spawn  "xchat")
@@ -226,7 +230,7 @@ myStartupHook  = -- I do not remember why this is here
                  spawn "/home/jpgarcia/.fehbg" >>
                  -- on shaula xmonad had the ugly X cursor, lets put a decent one
                  spawn "xsetroot -cursor_name left_ptr" >>
-                 -- spawn "compton -CGb --backend glx --xrender-sync \
-                 --       \ --xrender-sync-fence -fcCz -l -17 -t -17 \
-                 --       \ --config /home/jpgarcia/.xmonad/compton.conf">>
+                 spawn "compton -CGb --backend glx --xrender-sync \
+                       \ --xrender-sync-fence -fcCz -l -17 -t -17 \
+                       \ --config /home/jpgarcia/.xmonad/compton.conf">>
                  spawn "/home/jpgarcia/.screenlayout/aocedp.sh"

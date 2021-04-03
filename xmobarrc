@@ -30,12 +30,13 @@ Config { font = "xft:Noto Sans:pixelsize=14,M+ 1c:pixelsize=12"
                                                   -- charged status
                                   , "-i"	, "<fc=#006000>Charged</fc>"
                                   ] 50
-                    , Run Weather "SUAA" ["-t","M: <tempC>C",
-                                          "-L","18","-H","25","--normal",
+                    , Run Weather "SUAA" ["-t","Melilla: <tempC>C",
+                                          "-L","15","-H","28","--normal",
                                           "green","--high","red","--low",
                                           "lightblue"] 36000
-                    , Run Weather "SUMU" ["-t","C: <tempC>C (<skyCondition>)",
-                                          "-L","18","-H","25","--normal",
+                    , Run Weather "SUMU" ["-t",
+                       "Carrasco: <tempC>C, <pressure>hpa, <skyCondition>",
+                                          "-L","15","-H","28","--normal",
                                           "green","--high","red","--low",
                                           "lightblue"] 36000
                     , Run Cpu ["-L","3","-H","50",
@@ -43,18 +44,21 @@ Config { font = "xft:Noto Sans:pixelsize=14,M+ 1c:pixelsize=12"
                     , Run Memory ["-t","Mem: <usedratio>%"] 10
                     , Run Swap [] 10
                     , Run Date "%a %b %_d %Y %H:%M:%S" "date" 10
-                    , Run Com "uname" ["-onrv"] "" 0
+                    , Run Com "uname" ["-onv"] "" 0
                     , Run Network "enp1s0f1" ["-L","0","-H","32",
                                               "--normal","green",
                                               "--high","red"] 10
                     , Run Network "wlp2s0" ["-L","0","-H","32",
                                             "--normal","green",
-                                            "--high","red"] 10
+                                            "--high","red",
+                                            "<icon=./gnuico.xbm/></fc>"] 10
                     ]
        , sepChar  = "%"
        , alignSep = "}{"
        , template = "║ %cpu% ┆ %memory% ╳ %swap% ┆\
                     \ wired: %enp1s0f1% ╳ w'less:  %wlp2s0% ║}\
-                    \ ☆ %uname% ☭ { \
+                    \ ☆ %uname% <icon=/home/jpgarcia/.xmonad/gnuico.xbm/>\
+                    \    { \
                     \ ║ <fc=#ee9a00>%date%</fc> ║ %SUMU% ╳ %SUAA% ║  %battery% ║"
        }
+
